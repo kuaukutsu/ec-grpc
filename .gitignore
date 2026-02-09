@@ -1,0 +1,7 @@
+# phpstorm project files
+.idea
+.zed
+.tool-versions
+
+# Mac DS_Store Files
+.DS_Store

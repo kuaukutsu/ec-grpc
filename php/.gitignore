@@ -1,0 +1,19 @@
+# phpstorm project files
+.idea
+.zed
+.auth.json
+
+# Mac DS_Store Files
+.DS_Store
+
+# composer vendor dir
+/vendor
+**/vendor/
+/runtime
+
+# composer
+composer.lock
+
+# local
+*.local.php
+

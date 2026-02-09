@@ -1,0 +1,51 @@
+{
+  "name": "kuaukutsu/ec-grpc",
+  "type": "project",
+  "license": "MIT",
+  "vesrion": "0.0.1",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "authors": [
+    {
+      "name": "Dmitriy Krivopalov",
+      "email": "dimarik82@gmail.com"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/kuaukutsu/ec-grpc/issues",
+    "source": "https://github.com/kuaukutsu/ec-grpc"
+  },
+  "require": {
+    "php": "^8.4",
+    "fakerphp/faker": "^1.24",
+    "thesis/grpc": "^0.1",
+    "thesis/protoc-plugin": "^0.1"
+  },
+  "require-dev": {
+    "buggregator/trap": "^1.15",
+    "roave/security-advisories": "dev-latest"
+  },
+  "autoload": {
+    "psr-4": {
+      "Auth\\": "src/generate/php/Auth",
+      "kuaukutsu\\ec\\grpc\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "kuaukutsu\\ec\\grpc\\tests\\": "tests"
+    }
+  },
+  "config": {
+    "sort-packages": true,
+    "platform": {
+      "php": "8.4.5"
+    }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/thesis-php/protoc-plugin"
+    }
+  ]
+}

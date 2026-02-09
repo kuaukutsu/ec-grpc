@@ -1,0 +1,45 @@
+x-default-logging: &default-logging
+  driver: local
+  options:
+    max-size: "5m"
+    max-file: "3"
+
+x-volumes:
+  protos: &vol-protos
+    type: bind
+    source: ./protos
+    target: /protos
+  gprc: &vol-gprc
+    type: bind
+    source: ./sso
+    target: /app
+    
+name: auth
+services:
+  grpc:
+    container_name: auth_grpc
+    profiles: [ "serve" ]
+    image: golang:1.25-alpine3.23
+    ports:
+      - "3001:${PORT:-3000}"
+    deploy:
+      resources:
+        limits:        
+          cpus: '2.00'
+          memory: '2Gb'
+        reservations:
+          memory: '1Gb'
+    networks:
+      - local
+    volumes:
+        - *vol-protos
+        - *vol-gprc
+    environment:
+      CONFIG_PATH: "/app/config/local.yaml"
+      PORT: ${PORT:-3000}
+    working_dir: "/app"
+    command: [ "go", "run", "cmd/sso/main.go" ]
+    logging: *default-logging
+          
+networks:
+  local:
