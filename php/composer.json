@@ -18,11 +18,13 @@
   "require": {
     "php": "^8.4",
     "fakerphp/faker": "^1.24",
+    "firebase/php-jwt": "^7.0",
     "thesis/grpc": "^0.1",
     "thesis/protoc-plugin": "^0.1"
   },
   "require-dev": {
     "buggregator/trap": "^1.15",
+    "phpunit/phpunit": "^13.0",
     "roave/security-advisories": "dev-latest"
   },
   "autoload": {

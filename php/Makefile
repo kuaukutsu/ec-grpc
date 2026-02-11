@@ -63,6 +63,22 @@ run:
 		app_cli php index.php
 	- docker image rm -f app_cli
 
+.PHONY: tests
+tests:
+	- docker build --target app_cli -t app_cli .docker/php/cli
+	- docker run --init -it --rm \
+		--add-host=host.docker.internal:host-gateway \
+		--env-file .docker/environment/base.env \
+		-u $(USER) \
+		-v "$$(pwd)/src:/app/src" \
+		-v "$$(pwd)/tests:/app/tests" \
+		-v "$$(pwd)/vendor:/app/vendor" \
+		-v "$$(pwd)/phpunit.xml.dist:/app/phpunit.xml.dist" \
+		-v "$$(pwd)/$(GENERATE_DIR):/app/$(GENERATE_DIR)" \
+		-w /app \
+		app_cli /app/vendor/bin/phpunit
+	- docker image rm -f app_cli
+
 _executable:
 	chmod +x bin/compiler.php
 

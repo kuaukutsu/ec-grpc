@@ -93,7 +93,7 @@ func (s *Storage) App(
 		return models.App{
 			ID:     1,
 			Name:   "test",
-			Secret: "test",
+			Secret: "718e4894-a518-4802-9205-4838c7ddbd42",
 		}, nil
 	}
 

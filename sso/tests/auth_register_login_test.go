@@ -14,7 +14,7 @@ import (
 
 const (
 	AppID     = 1
-	AppSecret = "test"
+	AppSecret = "718e4894-a518-4802-9205-4838c7ddbd42"
 )
 
 func TestRegisterLogin_Login_HappyPath(t *testing.T) {
