@@ -48,7 +48,7 @@ generate: _executable _generate_dir
 		app_cli sh -c \
 		    "protoc -I proto proto/sso/*.proto \
 		    --plugin=protoc-gen-custom-plugin=bin/compiler.php \
-		    --custom-plugin_out=$(GENERATE_DIR)"
+		    --custom-plugin_out=php_namespace="kuaukutsu\\\\\\ec\\\\\\grpc\\\\\\generate\\\\\\php\\\\\\auth",grpc=client,src_path=./auth:$(GENERATE_DIR)"
 	- docker image rm -f app_cli
 
 .PHONY: run
@@ -60,7 +60,6 @@ run:
 		-u $(USER) \
 		-v "$$(pwd)/src:/app/src" \
 		-v "$$(pwd)/vendor:/app/vendor" \
-		-v "$$(pwd)/$(GENERATE_DIR):/app/$(GENERATE_DIR)" \
 		-w /app/src \
 		app_cli php index.php
 	- docker image rm -f app_cli
@@ -76,7 +75,6 @@ tests:
 		-v "$$(pwd)/tests:/app/tests" \
 		-v "$$(pwd)/vendor:/app/vendor" \
 		-v "$$(pwd)/phpunit.xml.dist:/app/phpunit.xml.dist" \
-		-v "$$(pwd)/$(GENERATE_DIR):/app/$(GENERATE_DIR)" \
 		-w /app \
 		app_cli /app/vendor/bin/phpunit
 	- docker image rm -f app_cli

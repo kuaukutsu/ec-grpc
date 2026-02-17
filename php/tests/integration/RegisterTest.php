@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace kuaukutsu\ec\grpc\tests\integration;
 
 use Amp\TimeoutCancellation;
-use Auth\RegisterRequest;
 use Faker\Factory;
 use Faker\Generator;
-use kuaukutsu\ec\grpc\tests\ServiceFactory;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
+use Thesis\Grpc\Client\CallError;
+use kuaukutsu\ec\grpc\generate\php\auth\RegisterRequest;
+use kuaukutsu\ec\grpc\tests\ServiceFactory;
 
 #[CoversNothing]
 final class RegisterTest extends TestCase
@@ -51,7 +52,8 @@ final class RegisterTest extends TestCase
             cancellation: new TimeoutCancellation(3.)
         );
 
-        self::expectExceptionMessage("user alredy exists");
+        // A grpc error with status code "ALREADY_EXISTS" and message "user already exists" received
+        self::expectException(CallError::class);
 
         $service->register(
             request: new RegisterRequest(

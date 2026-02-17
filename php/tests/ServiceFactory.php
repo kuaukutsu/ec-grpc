@@ -4,16 +4,23 @@ declare(strict_types=1);
 
 namespace kuaukutsu\ec\grpc\tests;
 
-use Auth\AuthServiceClient;
 use Thesis\Grpc\Client\Builder;
-use kuaukutsu\ec\grpc\internal\lib\EncoderFactory;
+use Thesis\Grpc\Protobuf\ProtobufEncoder;
+use Thesis\Protobuf\Decoder;
+use Thesis\Protobuf\Encoder;
+use kuaukutsu\ec\grpc\generate\php\auth\AuthServiceClient;
 
 final readonly class ServiceFactory
 {
     public static function makeAuthService(): AuthServiceClient
     {
-        $client = new Builder(EncoderFactory::makeProtobuf())
+        $encoder = Encoder\Builder::buildDefault();
+        $decoder = Decoder\Builder::buildDefault();
+
+        $client = new Builder()
             ->withHost('http://host.docker.internal:3001')
+            ->withProtobuf($decoder)
+            ->withEncoding(new ProtobufEncoder($encoder, $decoder))
             ->build();
 
         return new AuthServiceClient($client);

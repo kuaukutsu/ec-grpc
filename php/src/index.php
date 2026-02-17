@@ -5,19 +5,27 @@ declare(strict_types=1);
 namespace kuaukutsu\ec\grpc;
 
 use Amp\TimeoutCancellation;
-use Auth\AuthServiceClient;
-use Auth\LoginRequest;
-use Auth\RegisterRequest;
 use Faker\Factory;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Thesis\Grpc\Client\Builder;
-use kuaukutsu\ec\grpc\internal\lib\EncoderFactory;
+use Thesis\Grpc\Client\CallError;
+use Thesis\Grpc\Protobuf\ProtobufEncoder;
+use Thesis\Protobuf\Decoder;
+use Thesis\Protobuf\Encoder;
+use kuaukutsu\ec\grpc\generate\php\auth\AuthServiceClient;
+use kuaukutsu\ec\grpc\generate\php\auth\LoginRequest;
+use kuaukutsu\ec\grpc\generate\php\auth\RegisterRequest;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$client = new Builder(EncoderFactory::makeProtobuf())
+$encoder = Encoder\Builder::buildDefault();
+$decoder = Decoder\Builder::buildDefault();
+
+$client = new Builder()
     ->withHost('http://host.docker.internal:3001')
+    ->withProtobuf($decoder)
+    ->withEncoding(new ProtobufEncoder($encoder, $decoder))
     ->build();
 
 $faker = Factory::create();
@@ -35,6 +43,18 @@ $response = $service->register(
 );
 
 trap($response)->depth(2);
+
+try {
+    $service->register(
+        request: new RegisterRequest(
+            email: $email,
+            password: $pass,
+        ),
+        cancellation: new TimeoutCancellation(3.)
+    );
+} catch (CallError $exception) {
+    trap($exception)->depth(2);
+}
 
 $responseLogin = $service->login(
     request: new LoginRequest(

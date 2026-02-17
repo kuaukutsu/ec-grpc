@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace kuaukutsu\ec\grpc\tests\integration;
 
 use Amp\TimeoutCancellation;
-use Auth\LoginRequest;
-use Auth\RegisterRequest;
 use Faker\Factory;
 use Faker\Generator;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use kuaukutsu\ec\grpc\tests\ServiceFactory;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
+use kuaukutsu\ec\grpc\generate\php\auth\LoginRequest;
+use kuaukutsu\ec\grpc\generate\php\auth\RegisterRequest;
+use kuaukutsu\ec\grpc\tests\ServiceFactory;
 
 #[CoversNothing]
 final class LoginTest extends TestCase

@@ -20,7 +20,7 @@
     "fakerphp/faker": "^1.24",
     "firebase/php-jwt": "^7.0",
     "thesis/grpc": "^0.1",
-    "thesis/protoc-plugin": "^0.1"
+    "thesis/protoc-plugin": "^0.1.x-dev"
   },
   "require-dev": {
     "buggregator/trap": "^1.15",
