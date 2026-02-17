@@ -46,7 +46,9 @@ generate: _executable _generate_dir
 		-v "$$(pwd)/../protos/proto:/app/proto" \
 		-w /app \
 		app_cli sh -c \
-		    "protoc -I proto proto/sso/*.proto --plugin=protoc-gen-custom-plugin=bin/compiler.php --custom-plugin_out=$(GENERATE_DIR)"
+		    "protoc -I proto proto/sso/*.proto \
+		    --plugin=protoc-gen-custom-plugin=bin/compiler.php \
+		    --custom-plugin_out=$(GENERATE_DIR)"
 	- docker image rm -f app_cli
 
 .PHONY: run

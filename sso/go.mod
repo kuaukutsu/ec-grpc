@@ -8,7 +8,6 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/kuaukutsu/auth/protos v0.0.0
-	github.com/mattn/go-sqlite3 v1.14.33
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/crypto v0.47.0
 	google.golang.org/grpc v1.78.0

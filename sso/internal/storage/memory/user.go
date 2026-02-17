@@ -3,47 +3,41 @@ package memory
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	"github.com/kuaukutsu/auth/sso/internal/domain/models"
 	"github.com/kuaukutsu/auth/sso/internal/storage"
-	_ "github.com/mattn/go-sqlite3"
 )
 
-type Storage struct {
-	app     map[int]AppRow
-	user    map[string]*UserRow
-	uiEmail map[string]*UserRow
+type tableUser struct {
+	mu      sync.RWMutex
+	user    map[string]*rowUser
+	uiEmail map[string]*rowUser
 }
 
-type AppRow struct {
-	id     int
-	name   string
-	secret string
-}
-
-type UserRow struct {
+type rowUser struct {
 	uuid     string
 	email    string
 	passHash string
 }
 
-type UserIndexEmail map[string]UserRow
-
-func New() *Storage {
-	return &Storage{
-		app:     make(map[int]AppRow),
-		user:    make(map[string]*UserRow),
-		uiEmail: make(map[string]*UserRow),
+func NewUser() *tableUser {
+	return &tableUser{
+		user:    make(map[string]*rowUser),
+		uiEmail: make(map[string]*rowUser),
 	}
 }
 
-func (s *Storage) SaveUser(
+func (s *tableUser) SaveUser(
 	ctx context.Context,
 	uuid string,
 	email string,
 	passHash []byte,
 ) (string, error) {
 	const op = "storage.memory.SaveUser"
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
 
 	if _, exists := s.user[uuid]; exists {
 		return "", fmt.Errorf("%s: %w", op, storage.ErrUserExists)
@@ -53,7 +47,7 @@ func (s *Storage) SaveUser(
 		return "", fmt.Errorf("%s: %w", op, storage.ErrUserExists)
 	}
 
-	row := UserRow{
+	row := rowUser{
 		uuid:     uuid,
 		email:    email,
 		passHash: string(passHash),
@@ -65,11 +59,14 @@ func (s *Storage) SaveUser(
 	return uuid, nil
 }
 
-func (s *Storage) User(
+func (s *tableUser) User(
 	ctx context.Context,
 	email string,
 ) (models.User, error) {
 	const op = "storage.memory.User"
+
+	s.mu.RLock()
+	defer s.mu.RUnlock()
 
 	user, exists := s.uiEmail[email]
 	if exists == false {
@@ -80,31 +77,5 @@ func (s *Storage) User(
 		Uuid:     user.uuid,
 		Email:    user.email,
 		PassHash: []byte(user.passHash),
-	}, nil
-}
-
-func (s *Storage) App(
-	ctx context.Context,
-	id int,
-) (models.App, error) {
-	const op = "storage.memory.App"
-
-	if id == 1 {
-		return models.App{
-			ID:     1,
-			Name:   "test",
-			Secret: "718e4894-a518-4802-9205-4838c7ddbd42",
-		}, nil
-	}
-
-	app, exists := s.app[id]
-	if exists == false {
-		return models.App{}, fmt.Errorf("%s: %w", op, storage.ErrUserNotFound)
-	}
-
-	return models.App{
-		ID:     app.id,
-		Name:   app.name,
-		Secret: app.secret,
 	}, nil
 }

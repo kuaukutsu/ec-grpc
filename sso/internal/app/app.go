@@ -19,8 +19,9 @@ func New(
 	storagePath string,
 	tokenTtl time.Duration,
 ) *App {
-	storage := memory.New()
-	authService := auth.New(log, storage, storage, storage, tokenTtl)
+	app := memory.NewApp()
+	user := memory.NewUser()
+	authService := auth.New(log, app, user, user, tokenTtl)
 
 	grpc := grpc.New(log, authService, grpcPort)
 

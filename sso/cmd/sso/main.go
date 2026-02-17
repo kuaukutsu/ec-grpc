@@ -32,7 +32,7 @@ func main() {
 		}
 	}()
 
-	interrupt := make(chan os.Signal, 1)
+	interrupt := make(chan os.Signal, 3)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 
 	interruptSignal := <-interrupt
