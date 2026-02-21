@@ -29,7 +29,6 @@
   },
   "autoload": {
     "psr-4": {
-      "Auth\\": "src/generate/php/Auth",
       "kuaukutsu\\ec\\grpc\\": "src/"
     }
   },

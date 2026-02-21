@@ -7,9 +7,9 @@ namespace kuaukutsu\ec\grpc\tests\integration;
 use Amp\TimeoutCancellation;
 use Faker\Factory;
 use Faker\Generator;
+use Thesis\Grpc\GrpcException;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
-use Thesis\Grpc\Client\CallError;
 use kuaukutsu\ec\grpc\generate\php\auth\RegisterRequest;
 use kuaukutsu\ec\grpc\tests\ServiceFactory;
 
@@ -53,7 +53,7 @@ final class RegisterTest extends TestCase
         );
 
         // A grpc error with status code "ALREADY_EXISTS" and message "user already exists" received
-        self::expectException(CallError::class);
+        self::expectException(GrpcException::class);
 
         $service->register(
             request: new RegisterRequest(

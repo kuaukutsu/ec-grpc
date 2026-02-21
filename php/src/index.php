@@ -9,7 +9,7 @@ use Faker\Factory;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Thesis\Grpc\Client\Builder;
-use Thesis\Grpc\Client\CallError;
+use Thesis\Grpc\GrpcException;
 use Thesis\Grpc\Protobuf\ProtobufEncoder;
 use Thesis\Protobuf\Decoder;
 use Thesis\Protobuf\Encoder;
@@ -52,7 +52,7 @@ try {
         ),
         cancellation: new TimeoutCancellation(3.)
     );
-} catch (CallError $exception) {
+} catch (GrpcException $exception) {
     trap($exception)->depth(2);
 }
 
