@@ -35,8 +35,8 @@ composer-cli: ## composer console
 		composer:latest \
 		sh
 
-.PHONY: generate
-generate: _executable _generate_dir
+.PHONY: compiler
+compiler: _executable _generate_dir
 	- docker build --target app_protoc -t app_cli .docker/php/cli
 	- docker run --init -it --rm \
 		-u $(USER) \
@@ -49,6 +49,23 @@ generate: _executable _generate_dir
 		    "protoc -I proto proto/sso/*.proto \
 		    --plugin=protoc-gen-custom-plugin=bin/compiler.php \
 		    --custom-plugin_out=php_namespace="kuaukutsu\\\\\\ec\\\\\\grpc\\\\\\generate\\\\\\php\\\\\\auth",grpc=client,src_path=./auth:$(GENERATE_DIR)"
+	- docker image rm -f app_cli
+
+.PHONY: generate
+generate: _executable _generate_dir
+	- docker build --target app_protoc -t app_cli .docker/php/cli
+	- docker run --init -it --rm \
+		-u $(USER) \
+		-v "$$(pwd)/bin:/app/bin" \
+		-v "$$(pwd)/vendor:/app/vendor" \
+		-v "$$(pwd)/$(GENERATE_DIR):/app/$(GENERATE_DIR)" \
+		-v "$$(pwd)/../protos/proto:/app/proto" \
+		-w /app \
+		app_cli sh -c \
+		    "protoc \
+		    --plugin=protoc-gen-php-plugin=/app/bin/protoc-gen-php \
+		    proto/sso/*.proto \
+		    --php-plugin_out=php_namespace="kuaukutsu\\\\\\ec\\\\\\grpc\\\\\\generate\\\\\\php\\\\\\auth",grpc=client,src_path=./auth:$(GENERATE_DIR)"
 	- docker image rm -f app_cli
 
 .PHONY: run
