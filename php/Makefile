@@ -1,5 +1,6 @@
 PHP_VERSION ?= 8.4
 GENERATE_DIR ?= src/generate/php
+PROTOC_PLUGIN_VERSION=0.1.11
 USER = $$(id -u)
 
 # https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
@@ -37,7 +38,10 @@ composer-cli: ## composer console
 
 .PHONY: compiler
 compiler: _executable _generate_dir
-	- docker build --target app_protoc -t app_cli .docker/php/cli
+	- docker build \
+		--target app_protoc \
+		--tag app_cli \
+		.docker/php/cli
 	- docker run --init --rm \
 		-u $(USER) \
 		-v "$$(pwd)/bin:/app/bin" \
@@ -53,16 +57,19 @@ compiler: _executable _generate_dir
 
 .PHONY: generate
 generate: _executable _generate_dir
-	- docker build --target app_protoc -t app_cli .docker/php/cli
+	- docker build \
+		--build-arg PROTOC_PLUGIN_VERSION=$(PROTOC_PLUGIN_VERSION) \
+		--target app_protoc \
+		--tag app_cli \
+		.docker/php/cli
 	- docker run --init --rm \
 		-u $(USER) \
-		-v "$$(pwd)/bin:/app/bin" \
 		-v "$$(pwd)/$(GENERATE_DIR):/app/$(GENERATE_DIR)" \
 		-v "$$(pwd)/../protos/proto:/app/proto" \
 		-w /app \
 		app_cli sh -c \
 		    "protoc \
-		    --plugin=protoc-gen-php-plugin=/app/bin/protoc-gen-php \
+		    --plugin=protoc-gen-php-plugin=/usr/local/bin/protoc-gen-php \
 		    proto/sso/*.proto \
 		    --php-plugin_out=php_namespace="kuaukutsu\\\\\\ec\\\\\\grpc\\\\\\generate\\\\\\php\\\\\\auth",grpc=client,src_path=./auth:$(GENERATE_DIR)"
 	- docker image rm -f app_cli
