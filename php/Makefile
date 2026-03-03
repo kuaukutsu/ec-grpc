@@ -38,7 +38,7 @@ composer-cli: ## composer console
 .PHONY: compiler
 compiler: _executable _generate_dir
 	- docker build --target app_protoc -t app_cli .docker/php/cli
-	- docker run --init -it --rm \
+	- docker run --init --rm \
 		-u $(USER) \
 		-v "$$(pwd)/bin:/app/bin" \
 		-v "$$(pwd)/vendor:/app/vendor" \
@@ -54,10 +54,9 @@ compiler: _executable _generate_dir
 .PHONY: generate
 generate: _executable _generate_dir
 	- docker build --target app_protoc -t app_cli .docker/php/cli
-	- docker run --init -it --rm \
+	- docker run --init --rm \
 		-u $(USER) \
 		-v "$$(pwd)/bin:/app/bin" \
-		-v "$$(pwd)/vendor:/app/vendor" \
 		-v "$$(pwd)/$(GENERATE_DIR):/app/$(GENERATE_DIR)" \
 		-v "$$(pwd)/../protos/proto:/app/proto" \
 		-w /app \
@@ -71,7 +70,7 @@ generate: _executable _generate_dir
 .PHONY: run
 run:
 	- docker build --target app_devel -t app_cli .docker/php/cli
-	- docker run --init -it --rm \
+	- docker run --init --rm \
 		--add-host=host.docker.internal:host-gateway \
 		--env-file .docker/environment/base.env \
 		-u $(USER) \
@@ -84,7 +83,7 @@ run:
 .PHONY: tests
 tests:
 	- docker build --target app_cli -t app_cli .docker/php/cli
-	- docker run --init -it --rm \
+	- docker run --init --rm \
 		--add-host=host.docker.internal:host-gateway \
 		--env-file .docker/environment/base.env \
 		-u $(USER) \
