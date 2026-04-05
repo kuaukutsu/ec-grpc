@@ -1,6 +1,6 @@
 PHP_VERSION ?= 8.4
 GENERATE_DIR ?= src/generate/php
-PROTOC_PLUGIN_VERSION=0.1.11
+PROTOC_PLUGIN_VERSION=0.1.19
 USER = $$(id -u)
 
 # https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html

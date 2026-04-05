@@ -3,7 +3,6 @@ FROM ghcr.io/kuaukutsu/php:8.4-cli AS app_setup
 # Arguments
 ARG UID=10001
 ARG WORKDIR="/src"
-ARG PROTOC_PLUGIN_VERSION
 
 # Configure
 COPY conf/php.ini /usr/local/etc/php/php.ini
@@ -28,6 +27,8 @@ ENV COMPOSER_CACHE_DIR=/var/.composer
 RUN install-php-extensions bcmath zlib
 
 FROM app_setup AS app_protoc
+
+ARG PROTOC_PLUGIN_VERSION
 
 RUN apk add --no-cache protoc protobuf-dev
 
